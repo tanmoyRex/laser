@@ -1,0 +1,7 @@
+# Core dependencies for Laser_Beam_Calculator.ipynb
+numpy>=1.26
+matplotlib>=3.8
+
+# Jupyter, to open and run the notebook
+notebook>=7.0
+ipykernel>=6.0
