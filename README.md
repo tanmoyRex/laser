@@ -4,12 +4,14 @@ A Jupyter notebook for planning laser processing with **f-θ scan lenses**. It c
 
 - the focused spot diameter and Rayleigh range (depth of focus),
 - the beam diameter at any axial offset from focus or at any working distance,
-- the inverse case: where to place the workpiece to get a target spot size,
+- the inverse case: where to place the workpiece to get a target spot size, including stage-knob turns,
 - a caustic (beam envelope) plot around focus,
 - process metrics: peak irradiance, dwell time, line energy, keyhole number *Ke*, dimensionless energy density *E\**, and a lumped temperature-rise estimate,
 - a reference table of defocus distances for 2–200 % diameter growth.
 
 The derivations, assumptions and sources for the optics are in [`Laser_Equations.pdf`](Laser_Equations.pdf) (M. Hassan, 2026). Equation numbers below match that document.
+
+> **M3PL lab edition.** This branch (`m3pl-lab`) is the version used in the [Multiscale Metal Manufacturing Processes Lab (M3PL)](https://m3pl.me.wisc.edu/) at the University of Wisconsin–Madison. In addition to the public version on `main`, Section 5 converts the required defocus into **Z-stage knob settings** for the lab's stage (0.127 mm per increment, 25 increments per rotation). If you use a different stage, change those two values or use the `main` branch.
 
 ---
 
@@ -22,6 +24,8 @@ The derivations, assumptions and sources for the optics are in [`Laser_Equations
 - [Equations](#equations)
 - [Assumptions and limitations](#assumptions-and-limitations)
 - [References](#references)
+- [Author](#author)
+- [About M3PL](#about-m3pl)
 - [License](#license)
 
 ---
@@ -78,6 +82,7 @@ All inputs are set in **Section 2** unless noted otherwise.
 | `scan_speed_mm_s` | mm/s | Scan speed *v* (0 = stationary). |
 | `dz_mm` / `WD_mm` | mm | **Section 4:** set exactly one. |
 | `target_diameter_um` | µm | **Section 5:** desired spot size (`None` or `'focus'` = focal spot). |
+| `minimum_increment_of_knob_mm`, `increments_per_rotation` | mm, – | **Section 5:** Z-stage knob resolution (default 0.127 mm × 25 = 3.175 mm per rotation). Converts Δz into whole knob rotations + increments and shows the diameter each nearby setting actually gives. |
 | `eta`, `rho`, `Cp`, `k`, `T_liquidus`, `T_initial`, `mass_kg`, `dt_s` | SI | **Section 7:** absorptivity and material properties. Defaults are for 316L stainless steel. |
 
 **Sign convention:** Δz > 0 means the workpiece is moved **further from the lens**, i.e. below focus. So `WD + Δz` is below focus and `WD − Δz` is above focus.
@@ -91,7 +96,7 @@ All inputs are set in **Section 2** unless noted otherwise.
 | – | Helper functions | Spot size, Rayleigh range, forward/inverse propagation, peak irradiance. |
 | 3 | Focused spot and Rayleigh range | *d₀*, *w₀*, *z_R*, depth of focus 2*z_R*, peak irradiance, dwell time, line energy. |
 | 4 | Beam size at a given position | *d(z)* for a given Δz **or** WD, growth vs. focus, peak irradiance. |
-| 5 | Where to place the sample | \|Δz\| for a target diameter, both valid WD positions. |
+| 5 | Where to place the sample | \|Δz\| for a target diameter, both valid WD positions, knob rotations and increments. |
 | 6 | Caustic plot | Beam radius vs. Δz, with a secondary WD axis. |
 | 7 | Keyhole number, energy density, ΔT | *Ke*, *E\**, lumped ΔT and a regime indication. Uses `target_diameter_um` from **Section 5**, so run Section 5 first. |
 | 8 | Reference table | \|Δz\|, diameter and WD for 2, 10, 15, 30, 50, 100 and 200 % growth. |
@@ -250,6 +255,41 @@ E^* = \frac{\eta P}{\rho C_p (T_l - T_0)\,v\,d^2}
 7. Z. B. Harris et al., "Design and characterization of telecentric f-θ scanning lenses for broadband terahertz frequency systems," *AIP Advances* 10, 125313, 2020.
 8. Z. Gan et al., "Universal scaling laws of keyhole stability and porosity in 3D printing of metals," *Nature Communications* 12, 2379, 2021.
 9. ISO 11146-1:2021, *Lasers and laser-related equipment — Test methods for laser beam widths, divergence angles and beam propagation ratios.*
+
+## Author
+
+**Mahmudul Hassan**, PhD Candidate, Mechanical Engineering, University of Wisconsin–Madison.
+Multiscale Metal Manufacturing Processes Lab (M3PL), advisor: Prof. Frank Pfefferkorn.
+
+- **Research:** laser-based manufacturing and laser surface polishing, high-speed X-ray imaging of melt-pool and keyhole dynamics (with Argonne National Laboratory, BIAS and TU Wien), high-power laser platforms with programmable beam profiles, computer vision for process monitoring and quality control, and finite-element simulation of machining.
+- **Education:**
+  - Ph.D., Mechanical Engineering, University of Wisconsin–Madison (2022–present)
+  - M.S., Mechanical Engineering, Miami University, Ohio (2020–2022)
+  - B.S., Mechanical Engineering, Bangladesh University of Engineering and Technology (BUET) (2015–2019)
+- **Selected publications:**
+  - P. Faue, L. Rathmann, M. Möller, M. Hassan, et al., "High-speed X-ray study of process dynamics caused by surface features during continuous-wave laser polishing," *CIRP Annals*, 2023.
+  - M. Hassan, J. Ma, M. P. Jahan, "Numerical modeling and simulation of machining of 3D printed CFRP composite," *Manufacturing Letters*, 2022.
+  - M. M. Hassan, J. Ma, M. P. Jahan, "A Comparative Numerical Investigation on Machining of Laminated and 3D Printed CFRP Composites," *ASME IMECE*, 2022.
+  - N. M. Cococcetta, M. P. Jahan, et al. (incl. M. M. Hassan), "Sustainable Post-Processing of 3D Printed Thermoplastic CFRP Composites Using Cryogenic Machining," *Journal of Manufacturing Processes*, 2021.
+
+**Links:**
+- [Personal website](https://www.mahmudulhassan.com)
+- [Résumé](https://www.mahmudulhassan.com/full_resume.html)
+- [M3PL profile](https://m3pl.me.wisc.edu/staff/hassan-mahmudul/)
+- [UW–Madison Graduate School feature](https://grad.wisc.edu/2024/08/26/mahmudul-hassan/)
+- [LinkedIn](https://www.linkedin.com/in/mmahmudulh)
+- Email: [mhassan22@wisc.edu](mailto:mhassan22@wisc.edu)
+
+## About M3PL
+
+The [Multiscale Metal Manufacturing Processes Lab](https://m3pl.me.wisc.edu/) in the Department of Mechanical Engineering at the University of Wisconsin–Madison is directed by **Prof. Frank Pfefferkorn**. The lab studies discrete metal part manufacturing processes and heat transfer in manufacturing. Its research areas are:
+
+- friction stir welding and processing;
+- solid-state additive–subtractive manufacturing (e.g. friction surfacing);
+- multi-material laser powder bed fusion;
+- laser remelting for polishing, structuring and hardening of surfaces.
+
+Mechanical Engineering Building, 1513 University Avenue, Madison, WI 53706, USA.
 
 ## License
 
